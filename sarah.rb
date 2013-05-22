@@ -31,7 +31,12 @@ end
 post '/' do
   if params[:guess].downcase == 'gpcn'
     status 202
+    body <<-HTML
+      <meta http-equiv="refresh" content="3; url=https://www.google.com/search?site=imghp&tbm=isch&q=you+win+gif">
+      <h1><h1>you win!</h1></h1>
+    HTML
   else
     status 403
+    body 'nope'
   end
 end
