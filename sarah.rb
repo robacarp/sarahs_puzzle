@@ -3,13 +3,16 @@ require 'sinatra'
 require 'redis'
 
 
+configure do
+  REDIS = Redis.new host: 'localhost', port: 6379
+end
+
 before do
   key = "ratelimit:#{Time.now.to_f}"
 
-  @redis = Redis.new host: 'localhost', port: 6379
-  @redis.set key, 1
-  @redis.expire key, 5
-  list  = @redis.keys 'ratelimit:*'
+  REDIS.set key, 1
+  REDIS.expire key, 5
+  list  = REDIS.keys 'ratelimit:*'
 
   status 429 and halt if list.length > 10
 end
