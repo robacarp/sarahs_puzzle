@@ -2,19 +2,19 @@ require 'bundler/setup'
 require 'sinatra'
 require 'redis'
 
-@redis = Redis.new host: 'localhost', port: 6379
 
-key = "ratelimit:#{Time.now.to_f}"
-@redis.set key, 1
-@redis.expire key, 5
-list  = @redis.keys 'ratelimit:*'
+before do
+  key = "ratelimit:#{Time.now.to_f}"
 
-def limited
-  status 429
+  @redis = Redis.new host: 'localhost', port: 6379
+  @redis.set key, 1
+  @redis.expire key, 5
+  list  = @redis.keys 'ratelimit:*'
+
+  status 429 and halt if list.length > 10
 end
 
 get '/' do
-  limited and return if list.length > 10
   status 200
 
   body <<-HTML
@@ -26,7 +26,6 @@ get '/' do
 end
 
 post '/' do
-  limited and return if list.length > 10
   if params[:guess].downcase == 'gpcn'
     status 202
   else
