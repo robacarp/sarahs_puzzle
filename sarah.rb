@@ -22,7 +22,7 @@ get '/' do
 
   body <<-HTML
   <form method="post">
-    <input name="guess" placeholder="Last 4">
+    <input name="guess" placeholder="Last 4" autocomplete="off">
     <input type="submit" value="Guess">
   </form>
   HTML
